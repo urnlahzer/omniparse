@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}HITL Review - {{ job_id }}{% endblock %}
+
+{% block content %}
+<meta name="csrf-token" content="{{ csrf_token }}">
+<h2>Job: {{ job_id }}</h2>
+<p>{{ regions | length }} flagged region(s)</p>
+
+<form id="correction-form">
+  {% for region in regions %}
+  <div class="region">
+    <h3>Region: {{ region.region_id }}</h3>
+    <p>
+      <strong>Type:</strong> {{ region.element_type }} |
+      <strong>Bounding Box:</strong> [{{ region.bounding_box | join(', ') }}] |
+      <strong>Confidence:</strong>
+      <span {% if region.confidence < 0.5 %}class="confidence-low"{% endif %}>
+        {{ "%.3f" | format(region.confidence) }}
+      </span>
+    </p>
+
+    <h4>Engine Outputs</h4>
+    {% for engine_name, text in region.engine_texts.items() %}
+    <div class="engine-text">
+      <strong>{{ engine_name }}:</strong> {{ text }}
+    </div>
+    {% endfor %}
+
+    {% if region.consensus_text %}
+    <h4>Consensus Text</h4>
+    <div class="engine-text">{{ region.consensus_text }}</div>
+    {% endif %}
+
+    {% if region.corrected_text %}
+    <h4>Corrected Text</h4>
+    <div class="engine-text" style="background: #d1fae5;">{{ region.corrected_text }}</div>
+    {% endif %}
+
+    <h4>Correction</h4>
+    <textarea
+      class="correction-input"
+      name="correction_{{ region.region_id }}"
+      placeholder="Enter corrected text for this region..."
+    >{{ region.corrected_text or '' }}</textarea>
+  </div>
+  {% endfor %}
+
+  <button type="submit" class="btn">Submit Corrections</button>
+</form>
+
+<script>
+document.getElementById('correction-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var corrections = {};
+  var textareas = document.querySelectorAll('.correction-input');
+  textareas.forEach(function(ta) {
+    var val = ta.value.trim();
+    if (val) {
+      var regionId = ta.name.replace('correction_', '');
+      corrections[regionId] = val;
+    }
+  });
+  if (Object.keys(corrections).length === 0) {
+    alert('No corrections entered.');
+    return;
+  }
+  var csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+  fetch('/review/{{ job_id }}/submit', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': csrfToken
+    },
+    credentials: 'same-origin',
+    body: JSON.stringify({corrections: corrections})
+  })
+  .then(function(resp) { return resp.json(); })
+  .then(function(data) {
+    if (data.status === 'updated') {
+      window.location.reload();
+    } else {
+      alert('Error: ' + JSON.stringify(data));
+    }
+  })
+  .catch(function(err) { alert('Request failed: ' + err); });
+});
+</script>
+{% endblock %}

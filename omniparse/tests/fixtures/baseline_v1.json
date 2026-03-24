@@ -1,0 +1,43 @@
+{
+  "scanned_legal_filing": {
+    "multi_engine": 5,
+    "single_engine": 1,
+    "total": 6,
+    "multi_engine_rate": 0.8333
+  },
+  "born_digital_form": {
+    "multi_engine": 4,
+    "single_engine": 0,
+    "total": 4,
+    "multi_engine_rate": 1.0
+  },
+  "degraded_historical": {
+    "multi_engine": 4,
+    "single_engine": 1,
+    "total": 5,
+    "multi_engine_rate": 0.8
+  },
+  "mixed_content": {
+    "multi_engine": 4,
+    "single_engine": 0,
+    "total": 4,
+    "multi_engine_rate": 1.0
+  },
+  "type_disagreement": {
+    "multi_engine": 3,
+    "single_engine": 0,
+    "total": 3,
+    "multi_engine_rate": 1.0
+  },
+  "generated_controlled": {
+    "multi_engine": 3,
+    "single_engine": 0,
+    "total": 3,
+    "multi_engine_rate": 1.0
+  },
+  "_aggregate": {
+    "multi_engine": 23,
+    "total": 25,
+    "multi_engine_rate": 0.92
+  }
+}

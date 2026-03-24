@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}HITL Review - Jobs{% endblock %}
+
+{% block content %}
+{% if jobs %}
+<table>
+  <thead>
+    <tr>
+      <th>Job ID</th>
+      <th>Filename</th>
+      <th>Submitted</th>
+      <th>Flagged Regions</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for job in jobs %}
+    <tr>
+      <td>
+        <a href="/review/{{ job.job_id }}">
+          {{ job.job_id }}
+        </a>
+      </td>
+      <td>{{ job.filename }}</td>
+      <td>{{ job.submitted_at }}</td>
+      <td>{{ job.hitl_region_count }}</td>
+      <td>
+        <span class="badge badge-{{ job.status }}">{{ job.status }}</span>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No jobs with HITL-flagged regions.</p>
+{% endif %}
+{% endblock %}
