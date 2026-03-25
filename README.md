@@ -17,7 +17,7 @@ Runs a five-engine ensemble — pdfplumber, PaddleOCR, Docling (always), TrOCR, 
 ### Local Setup
 
 ```bash
-git clone https://github.com/<your-org>/omniparse.git
+git clone https://github.com/urnlahzer/omniparse.git
 cd omniparse
 python -m venv .venv
 source .venv/bin/activate
